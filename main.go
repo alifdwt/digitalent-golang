@@ -1,76 +1,59 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"strconv"
+	"log"
 
-	"github.com/alifdwt/digitalent-golang/models"
+	"github.com/alifdwt/digitalent-golang/handler"
+	"github.com/alifdwt/digitalent-golang/mapper"
+	"github.com/alifdwt/digitalent-golang/pkg/database/migration"
+	"github.com/alifdwt/digitalent-golang/pkg/database/postgres"
+	"github.com/alifdwt/digitalent-golang/pkg/dotenv"
+	"github.com/alifdwt/digitalent-golang/repository"
+	"github.com/alifdwt/digitalent-golang/service"
 )
 
+// @title Digitalent-Golang
+// @version 1.0
+// @description This is an API for Digitalent-Golang Assignment 2
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name Alif Dewantara
+// @contact.url http://github.com/alifdwt
+// @contact.email aputradewantara@gmail.com
+
+// @host localhost:8080
 func main() {
-	students := []models.Student{
-		{
-			Absen:     1,
-			Nama:      "Alif Dewantara",
-			Alamat:    "Jl. Mangga No. 2, Bogor",
-			Pekerjaan: "Full Stack Developer",
-			Alasan:    "Saya ingn memperdalam skill tentang backend development",
-		},
-		{
-			Absen:     2,
-			Nama:      "Budi",
-			Alamat:    "Jl. Durian No. 3, Sukabumi",
-			Pekerjaan: "Programmer",
-			Alasan:    "Saya ingin membuat aplikasi",
-		},
-		{
-			Absen:     3,
-			Nama:      "Caca",
-			Alamat:    "Jl. Apel No. 4, Bandung",
-			Pekerjaan: "Backend Engineer",
-			Alasan:    "Meraih mimpi",
-		},
-		{
-			Absen:     4,
-			Nama:      "Dedi",
-			Alamat:    "Jl. Anggur No. 5, Semarang",
-			Pekerjaan: "Guru SMK",
-			Alasan:    "Saya ingin mengajarkan bahasa pemrograman",
-		},
+	config, err := dotenv.LoadConfig(".")
+	if err != nil {
+		log.Fatal("Cannot load config: ", err)
 	}
 
-	arg := os.Args
-	if len(arg) == 2 {
-		absen := arg[1]
-		absenInt, err := strconv.Atoi(absen)
+	db, err := postgres.NewClient(config.DB_USER, config.DB_PASSWORD, config.DB_HOST, config.DB_NAME)
+	if err != nil {
+		log.Fatal("Error while connecting to database: ", err)
+	}
 
-		if err != nil {
-			fmt.Println("Absen harus berupa angka")
-			return
-		}
+	err = migration.RunMigration(db)
+	if err != nil {
+		log.Fatal("Error while migrating to database: ", err)
+	}
 
-		if absenInt < 1 {
-			fmt.Println("Absen harus lebih dari 0")
-			return
-		}
+	repository := repository.NewRepository(db)
 
-		for _, student := range students {
-			if student.Absen == absenInt {
-				fmt.Printf("Nama: %s\nAlamat: %s\nPekerjaan: %s\nAlasan: %s\n\n", student.Nama, student.Alamat, student.Pekerjaan, student.Alasan)
-				return
-			}
-		}
-		fmt.Println("Absen tidak ditemukan")
-		return
-	} else if len(arg) == 1 {
-		for _, student := range students {
-			if student == students[len(students)-1] {
-				fmt.Printf("Absen: %d\nNama: %s\nAlamat: %s\nPekerjaan: %s\nAlasan: %s", student.Absen, student.Nama, student.Alamat, student.Pekerjaan, student.Alasan)
-			} else {
-				fmt.Printf("Absen: %d\nNama: %s\nAlamat: %s\nPekerjaan: %s\nAlasan: %s\n\n", student.Absen, student.Nama, student.Alamat, student.Pekerjaan, student.Alasan)
-			}
-		}
-		return
+	mapper := mapper.NewMapper()
+
+	service := service.NewService(service.Deps{
+		Repositories: repository,
+		Mapper:       *mapper,
+	})
+
+	myHandler, err := handler.NewHandler(*service)
+	if err != nil {
+		log.Fatal("Error while creating server: ", err)
+	}
+
+	err = myHandler.Start(config.ServerAddress)
+	if err != nil {
+		log.Fatal("Cannot start server: ", err)
 	}
 }

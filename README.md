@@ -1,77 +1,174 @@
-# Digitalent Kominfo Golang 004 - Assignment 01
+# Digitalent Kominfo Golang 004 - Assignment 2
 
-> This is students list manager, built using the [Go programming language](https://golang.org). It allows user to get all students data, and to get individual student data by 'absen'.
+> This is order management API, built using the [Go programming language](https://golang.org), [Gin](https://gin-gonic.com/), and [Gorm](https://gorm.io/). It allows user to create, read, update, and delete orders.
 
 ## 🧰 Installation
 
 1. Clone the repository
 
 ```bash
-git clone https://github.com/alifdwt/digitalent-golang.git
+git clone -b assignment-2 https://github.com/alifdwt/digitalent-golang.git
 ```
 
-2. Run the application
+2. Install Go and PostgreSQL
+
+3. Run the application
 
 ```bash
 go run main.go
 ```
 
-## 📝 Documentation
+By default, app will be running at localhost:8080
 
-### Print all students
+## 📝 API Documentation
 
-```bash
-go run main.go
+You can also access Swagger documentation at http://localhost:8080/docs/index.html
+
+### Create Order
+
+- Method: POST
+- Path: /orders
+- Request:
+
+```
+{
+        "orderedAt": "2021-10-06T16:53:27.675931+07:00",
+        "customerName": "Test",
+        "items":[
+            {
+                "itemCode": "Item1",
+                "description": "ItemDescription",
+                "quantity": 1
+            },
+            {
+                "itemCode": "Item2",
+                "description": "ItemDescription",
+                "quantity": 1
+            }
+        ]
+    }
 ```
 
-Result:
+- Response
 
-```bash
-Absen: 1
-Nama: Alif Dewantara
-Alamat: Jl. Mangga No. 2, Bogor
-Pekerjaan: Full Stack Developer
-Alasan: Saya ingn memperdalam skill tentang backend development
-
-Absen: 2
-Nama: Budi
-Alamat: Jl. Durian No. 3, Sukabumi
-Pekerjaan: Programmer
-Alasan: Saya ingin membuat aplikasi
-
-Absen: 3
-Nama: Caca
-Alamat: Jl. Apel No. 4, Bandung
-Pekerjaan: Backend Engineer
-Alasan: Meraih mimpi
-
-Absen: 4
-Nama: Dedi
-Alamat: Jl. Anggur No. 5, Semarang
-Pekerjaan: Guru SMK
-Alasan: Saya ingin mengajarkan bahasa pemrograman%
+```
+{
+	"id": 1,
+        "orderedAt": "2021-10-06T16:53:27.675931+07:00",
+        "customerName": "Test",
+        "items":[
+            {
+                "itemCode": "Item1",
+                "description": "ItemDescription",
+                "quantity": 1
+            },
+            {
+                "itemCode": "Item2",
+                "description": "ItemDescription",
+                "quantity": 1
+            }
+        ]
+    }
 ```
 
-### Print student by absen
+### Get All Orders
 
-```bash
-go run main.go {absen}
+- Method: GET
+- Path: /orders
+- Response
+
+```
+[
+	    {
+	"id": 1,
+        "orderedAt": "2021-10-06T16:53:27.675931+07:00",
+        "customerName": "Test",
+        "items":[
+            {
+                "itemCode": "Item1",
+                "description": "ItemDescription",
+                "quantity": 1
+            },
+            {
+                "itemCode": "Item2",
+                "description": "ItemDescription",
+                "quantity": 1
+            }
+        ]
+    },
+	    {
+	"id": 2,
+        "orderedAt": "2021-10-06T16:53:27.675931+07:00",
+        "customerName": "Test",
+        "items":[
+            {
+                "itemCode": "Item1",
+                "description": "ItemDescription",
+                "quantity": 1
+            },
+            {
+                "itemCode": "Item2",
+                "description": "ItemDescription",
+                "quantity": 1
+            }
+        ]
+    }
+]
 ```
 
-Example:
+### Update order
 
-```bash
-go run main.go 2
+- Method: PUT
+- Path: /orders/{orderId}
+- Request:
+
+```
+{
+    "orderedAt": "2021-10-06T16:53:27.675931+07:00",
+    "customerName": "Test update",
+    "items":[
+        {
+            "itemCode": "Item2",
+            "description": "ItemDescription",
+            "quantity": 1
+        },
+        {
+            "itemCode": "Item2",
+            "description": "ItemDescription",
+            "quantity": 1
+        }
+    ]
+}
 ```
 
-Result:
+- Response
 
-```bash
-Absen: 2
-Nama: Budi
-Kelas: Jl. Durian No. 3, Sukabumi
-Pekerjaan: Programmer
-Alasan: Saya ingin membuat aplikasi
+```
+{
+	"id": 2,
+        "orderedAt": "2021-10-06T16:53:27.675931+07:00",
+        "customerName": "Test update",
+        "items":[
+            {
+                "itemCode": "Item2",
+                "description": "ItemDescription",
+                "quantity": 1
+            },
+            {
+                "itemCode": "Item2",
+                "description": "ItemDescription",
+                "quantity": 1
+            }
+        ]
+}
 ```
 
-This is an assignment for "Digitalent - Scalable Web Service with Golang" course.
+### Delete order
+
+- Method: DELETE
+- Path: /orders/{orderId}
+- Response
+
+```
+"Success delete"
+```
