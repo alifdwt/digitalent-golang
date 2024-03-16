@@ -1,174 +1,48 @@
-# Digitalent Kominfo Golang 004 - Assignment 2
+# Digitalent Kominfo Golang 004 - Assignment 3
 
-> This is order management API, built using the [Go programming language](https://golang.org), [Gin](https://gin-gonic.com/), and [Gorm](https://gorm.io/). It allows user to create, read, update, and delete orders.
+> This is a microservice that updates the JSON file in every 15 seconds.
 
 ## 🧰 Installation
 
 1. Clone the repository
 
 ```bash
-git clone -b assignment-2 https://github.com/alifdwt/digitalent-golang.git
+git clone -b assignment-3 https://github.com/alifdwt/digitalent-golang.git
 ```
 
-2. Install Go and PostgreSQL
-
-3. Run the application
+2. Run the application
 
 ```bash
 go run main.go
 ```
 
-By default, app will be running at localhost:8080
+3. Open http://localhost:8080 in your browser
 
-## 📝 API Documentation
+## 📝 Documentation
 
-You can also access Swagger documentation at http://localhost:8080/docs/index.html
+### Get Water and Wind Status
 
-### Create Order
-
-- Method: POST
-- Path: /orders
-- Request:
-
-```
-{
-        "orderedAt": "2021-10-06T16:53:27.675931+07:00",
-        "customerName": "Test",
-        "items":[
-            {
-                "itemCode": "Item1",
-                "description": "ItemDescription",
-                "quantity": 1
-            },
-            {
-                "itemCode": "Item2",
-                "description": "ItemDescription",
-                "quantity": 1
-            }
-        ]
-    }
+```bash
+go run main.go
 ```
 
-- Response
+Result:
 
-```
-{
-	"id": 1,
-        "orderedAt": "2021-10-06T16:53:27.675931+07:00",
-        "customerName": "Test",
-        "items":[
-            {
-                "itemCode": "Item1",
-                "description": "ItemDescription",
-                "quantity": 1
-            },
-            {
-                "itemCode": "Item2",
-                "description": "ItemDescription",
-                "quantity": 1
-            }
-        ]
-    }
+```bash
+Server started at http://localhost:8080
+Status updated successfully!
+|| Water: 97m                   || Wind: 28m/s                  ||
+|| Water condition: bahaya      || Wind condition: bahaya       ||
+
+Status updated successfully!
+|| Water: 30m                   || Wind: 83m/s                  ||
+|| Water condition: bahaya      || Wind condition: bahaya       ||
+
+Status updated successfully!
+|| Water: 92m                   || Wind: 53m/s                  ||
+|| Water condition: bahaya      || Wind condition: bahaya       ||
 ```
 
-### Get All Orders
+## 📝 Status Page
 
-- Method: GET
-- Path: /orders
-- Response
-
-```
-[
-	    {
-	"id": 1,
-        "orderedAt": "2021-10-06T16:53:27.675931+07:00",
-        "customerName": "Test",
-        "items":[
-            {
-                "itemCode": "Item1",
-                "description": "ItemDescription",
-                "quantity": 1
-            },
-            {
-                "itemCode": "Item2",
-                "description": "ItemDescription",
-                "quantity": 1
-            }
-        ]
-    },
-	    {
-	"id": 2,
-        "orderedAt": "2021-10-06T16:53:27.675931+07:00",
-        "customerName": "Test",
-        "items":[
-            {
-                "itemCode": "Item1",
-                "description": "ItemDescription",
-                "quantity": 1
-            },
-            {
-                "itemCode": "Item2",
-                "description": "ItemDescription",
-                "quantity": 1
-            }
-        ]
-    }
-]
-```
-
-### Update order
-
-- Method: PUT
-- Path: /orders/{orderId}
-- Request:
-
-```
-{
-    "orderedAt": "2021-10-06T16:53:27.675931+07:00",
-    "customerName": "Test update",
-    "items":[
-        {
-            "itemCode": "Item2",
-            "description": "ItemDescription",
-            "quantity": 1
-        },
-        {
-            "itemCode": "Item2",
-            "description": "ItemDescription",
-            "quantity": 1
-        }
-    ]
-}
-```
-
-- Response
-
-```
-{
-	"id": 2,
-        "orderedAt": "2021-10-06T16:53:27.675931+07:00",
-        "customerName": "Test update",
-        "items":[
-            {
-                "itemCode": "Item2",
-                "description": "ItemDescription",
-                "quantity": 1
-            },
-            {
-                "itemCode": "Item2",
-                "description": "ItemDescription",
-                "quantity": 1
-            }
-        ]
-}
-```
-
-### Delete order
-
-- Method: DELETE
-- Path: /orders/{orderId}
-- Response
-
-```
-"Success delete"
-```
+![status](assets/status_page.jpeg)
