@@ -43,6 +43,17 @@ Status updated successfully!
 || Water condition: bahaya      || Wind condition: bahaya       ||
 ```
 
+status.json result:
+
+```json
+{
+  "status": {
+    "water": 92,
+    "wind": 53
+  }
+}
+```
+
 ## 📝 Status Page
 
 ![status](assets/status_page.jpeg)
