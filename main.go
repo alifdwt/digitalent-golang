@@ -1,140 +1,81 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"html/template"
-	"log"
-	"math/rand"
-	"net/http"
-	"os"
-	"time"
+	"mygram-api/handler"
+	"mygram-api/mapper"
+	"mygram-api/pkg/database/migration"
+	"mygram-api/pkg/database/postgres"
+	"mygram-api/pkg/dotenv"
+	"mygram-api/pkg/hashing"
+	"mygram-api/pkg/logger"
+	"mygram-api/pkg/token"
+	"mygram-api/repository"
+	"mygram-api/service"
+
+	"go.uber.org/zap"
 )
 
-type Status struct {
-	Status struct {
-		Water int `json:"water"`
-		Wind  int `json:"wind"`
-	} `json:"status"`
-}
+// @title MyGram
+// @version 1.0
+// @description This is MyGram API for final project at Scalable Webservice with Golang - DTS Kominfo
+// @termsOfService http://swagger.io/terms/
 
-type StatusWithCondition struct {
-	Water struct {
-		Value     int    `json:"value"`
-		Condition string `json:"condition"`
-	} `json:"water"`
-	Wind struct {
-		Value     int    `json:"value"`
-		Condition string `json:"condition"`
-	} `json:"wind"`
-}
+// @contact.name Alif Dewantara
+// @contact.url http://github.com/alifdwt
+// @contact.email aputradewantara@gmail.com
 
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+
+// @license.name Apache 2.0
+// @licence.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
 func main() {
-	filePath := "status.json"
+	log, err := logger.NewLogger()
+	if err != nil {
+		log.Error("Error while initializing logger", zap.Error(err))
+	}
 
-	go func() {
-		for {
-			updateStatus(filePath)
-			statusLogger(statusToStatusWithCondition(filePath))
-			time.Sleep(15 * time.Second)
-		}
-	}()
+	config, err := dotenv.LoadConfig(".")
+	if err != nil {
+		log.Error("Error while load environtment variables", zap.Error(err))
+	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		statusWithCondition := statusToStatusWithCondition(filePath)
+	db, err := postgres.NewClient(config.DB_USER, config.DB_PASSWORD, config.DB_HOST, config.DB_NAME)
+	if err != nil {
+		log.Error("Error while connecting to database", zap.Error(err))
+	}
 
-		templateHTML, err := template.ParseFiles("views/index.html")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	err = migration.RunMigration(db)
+	if err != nil {
+		log.Error("Error while migrating to database", zap.Error(err))
+	}
 
-		err = templateHTML.Execute(w, statusWithCondition)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	hashing := hashing.NewHashingPassword()
+	repository := repository.NewRepository(db)
+
+	tokenMaker, err := token.NewJWTMaker(config.TOKEN_SYMETRIC_KEY)
+	if err != nil {
+		log.Error("Error while initializing token maker", zap.Error(err))
+	}
+
+	mapper := mapper.NewMapper()
+
+	service := service.NewService(service.Deps{
+		Config:     config,
+		Repository: repository,
+		Hashing:    *hashing,
+		TokenMaker: tokenMaker,
+		Logger:     *log,
+		Mapper:     *mapper,
 	})
 
-	fmt.Println("Server started at http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
-}
+	myHandler := handler.NewHandler(service, tokenMaker)
 
-func updateStatus(filePath string) Status {
-	water := rand.Intn(100) + 1
-	wind := rand.Intn(100) + 1
-
-	status := Status{}
-	status.Status.Water = water
-	status.Status.Wind = wind
-
-	statusJSON, err := json.MarshalIndent(status, "", "  ")
+	err = myHandler.Init().Run(config.ServerAddress)
 	if err != nil {
-		fmt.Println("Error while marshalling JSON: ", err)
-		return Status{}
+		log.Error("Cannot start server", zap.Error(err))
 	}
-
-	err = os.WriteFile(filePath, statusJSON, 0644)
-	if err != nil {
-		fmt.Println("Error while writing to JSON file: ", err)
-		return Status{}
-	}
-
-	return status
-}
-
-func statusToStatusWithCondition(filePath string) StatusWithCondition {
-	file, err := os.ReadFile(filePath)
-	if err != nil {
-		log.Fatal("Error while reading JSON file: ", err)
-	}
-
-	var status Status
-	err = json.Unmarshal(file, &status)
-	if err != nil {
-		log.Fatal("Error while unmarshalling JSON: ", err)
-	}
-
-	var waterCondition string
-	if status.Status.Water < 5 {
-		waterCondition = "aman"
-	} else if status.Status.Water < 9 {
-		waterCondition = "siaga"
-	} else {
-		waterCondition = "bahaya"
-	}
-
-	var windCondition string
-	if status.Status.Wind < 6 {
-		windCondition = "aman"
-	} else if status.Status.Wind < 16 {
-		windCondition = "siaga"
-	} else {
-		windCondition = "bahaya"
-	}
-
-	statusWithCondition := StatusWithCondition{
-		Water: struct {
-			Value     int    `json:"value"`
-			Condition string `json:"condition"`
-		}{
-			Value:     status.Status.Water,
-			Condition: waterCondition,
-		},
-		Wind: struct {
-			Value     int    `json:"value"`
-			Condition string `json:"condition"`
-		}{
-			Value:     status.Status.Wind,
-			Condition: windCondition,
-		},
-	}
-
-	return statusWithCondition
-}
-
-func statusLogger(status StatusWithCondition) {
-	fmt.Println("Status updated successfully!")
-	fmt.Printf("|| Water: %dm 			|| Wind: %dm/s 			||\n", status.Water.Value, status.Wind.Value)
-	fmt.Printf("|| Water condition: %s 	|| Wind condition: %s 	||\n\n", status.Water.Condition, status.Wind.Condition)
 }
