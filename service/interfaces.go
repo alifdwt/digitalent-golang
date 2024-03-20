@@ -2,9 +2,11 @@ package service
 
 import (
 	"mygram-api/domain/requests/auth"
+	"mygram-api/domain/requests/comment"
 	"mygram-api/domain/requests/photo"
 	"mygram-api/domain/requests/user"
 	"mygram-api/domain/responses"
+	commentRes "mygram-api/domain/responses/comment"
 	photoRes "mygram-api/domain/responses/photo"
 	userRes "mygram-api/domain/responses/user"
 )
@@ -25,4 +27,12 @@ type PhotoService interface {
 	GetPhotoById(photoId uint) (*photoRes.PhotoResponse, error)
 	UpdatePhoto(userId uint, photoId uint, request photo.UpdatePhotoRequest) (*photoRes.PhotoResponse, error)
 	DeletePhoto(photoId uint) (*photoRes.PhotoResponse, error)
+}
+
+type CommentService interface {
+	CreateComment(userId uint, request comment.CreateCommentRequest) (*commentRes.CommentResponse, error)
+	GetCommentAll() (*[]commentRes.CommentResponse, error)
+	GetCommentById(commentId uint) (*commentRes.CommentResponse, error)
+	UpdateComment(userId uint, commentId uint, request comment.UpdateCommentRequest) (*commentRes.CommentResponse, error)
+	DeleteComment(commentId uint) (*commentRes.CommentResponse, error)
 }

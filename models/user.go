@@ -11,7 +11,7 @@ type User struct {
 	ProfileImageURL string        `json:"profile_image_url"`
 	CreatedAt       time.Time     `json:"created_at"`
 	UpdatedAt       time.Time     `json:"updated_at"`
-	Comments        []Comment     `gorm:"constraint:OnDelete:CASCADE;"`
-	Photos          []Photo       `gorm:"constraint:OnDelete:CASCADE;"`
-	SocialMedia     []SocialMedia `gorm:"constraint:OnDelete:CASCADE;"`
+	Comments        []Comment     `gorm:"constraint:OnDelete:CASCADE"`
+	Photos          []Photo       `gorm:"constraint:OnDelete:CASCADE"`
+	SocialMedia     []SocialMedia `gorm:"constraint:OnDelete:CASCADE"`
 }
