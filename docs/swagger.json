@@ -16,6 +16,207 @@
     },
     "host": "localhost:8080",
     "paths": {
+        "/photos": {
+            "get": {
+                "description": "Get all photos from the application",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photos"
+                ],
+                "summary": "Get all photos",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/photo.PhotoResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create photo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photos"
+                ],
+                "summary": "Create photo",
+                "parameters": [
+                    {
+                        "description": "photo data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/photo.CreatePhotoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/photo.PhotoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/photos/{id}": {
+            "get": {
+                "description": "Get photo by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photos"
+                ],
+                "summary": "Get photo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Photo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/photo.PhotoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update photo by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photos"
+                ],
+                "summary": "Update photo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Photo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "photo data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/photo.UpdatePhotoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/photo.PhotoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete photo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photos"
+                ],
+                "summary": "Delete photo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Photo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "put": {
                 "security": [
@@ -211,6 +412,62 @@
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "photo.CreatePhotoRequest": {
+            "type": "object",
+            "required": [
+                "photo_url",
+                "title"
+            ],
+            "properties": {
+                "caption": {
+                    "type": "string"
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "photo.PhotoResponse": {
+            "type": "object",
+            "properties": {
+                "caption": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "photo.UpdatePhotoRequest": {
+            "type": "object",
+            "required": [
+                "photo_url",
+                "title"
+            ],
+            "properties": {
+                "caption": {
+                    "type": "string"
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

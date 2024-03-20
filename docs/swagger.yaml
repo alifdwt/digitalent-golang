@@ -29,6 +29,43 @@ definitions:
     - password
     - username
     type: object
+  photo.CreatePhotoRequest:
+    properties:
+      caption:
+        type: string
+      photo_url:
+        type: string
+      title:
+        type: string
+    required:
+    - photo_url
+    - title
+    type: object
+  photo.PhotoResponse:
+    properties:
+      caption:
+        type: string
+      id:
+        type: integer
+      photo_url:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  photo.UpdatePhotoRequest:
+    properties:
+      caption:
+        type: string
+      photo_url:
+        type: string
+      title:
+        type: string
+    required:
+    - photo_url
+    - title
+    type: object
   responses.ErrorMessage:
     properties:
       message:
@@ -84,6 +121,135 @@ info:
   title: MyGram
   version: "1.0"
 paths:
+  /photos:
+    get:
+      consumes:
+      - application/json
+      description: Get all photos from the application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/photo.PhotoResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorMessage'
+      summary: Get all photos
+      tags:
+      - photos
+    post:
+      consumes:
+      - application/json
+      description: Create photo
+      parameters:
+      - description: photo data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/photo.CreatePhotoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/photo.PhotoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorMessage'
+      security:
+      - BearerAuth: []
+      summary: Create photo
+      tags:
+      - photos
+  /photos/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete photo
+      parameters:
+      - description: Photo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorMessage'
+      security:
+      - BearerAuth: []
+      summary: Delete photo
+      tags:
+      - photos
+    get:
+      consumes:
+      - application/json
+      description: Get photo by id
+      parameters:
+      - description: Photo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/photo.PhotoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorMessage'
+      summary: Get photo
+      tags:
+      - photos
+    put:
+      consumes:
+      - application/json
+      description: Update photo by id
+      parameters:
+      - description: Photo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: photo data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/photo.UpdatePhotoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/photo.PhotoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorMessage'
+      security:
+      - BearerAuth: []
+      summary: Update photo
+      tags:
+      - photos
   /users:
     delete:
       consumes:

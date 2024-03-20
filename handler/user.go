@@ -82,5 +82,5 @@ func (h *Handler) handlerDeleteUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, "success delete user")
+	c.JSON(http.StatusOK, gin.H{"message": "Your account has been successfully deleted"})
 }

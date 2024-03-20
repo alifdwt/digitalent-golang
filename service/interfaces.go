@@ -2,8 +2,10 @@ package service
 
 import (
 	"mygram-api/domain/requests/auth"
+	"mygram-api/domain/requests/photo"
 	"mygram-api/domain/requests/user"
 	"mygram-api/domain/responses"
+	photoRes "mygram-api/domain/responses/photo"
 	userRes "mygram-api/domain/responses/user"
 )
 
@@ -15,4 +17,12 @@ type AuthService interface {
 type UserService interface {
 	UpdateUserById(id uint, request *user.UpdateUserRequest) (*userRes.UserResponse, error)
 	DeleteUserById(id uint) (*userRes.UserResponse, error)
+}
+
+type PhotoService interface {
+	CreatePhoto(userId uint, request photo.CreatePhotoRequest) (*photoRes.PhotoResponse, error)
+	GetPhotoAll() (*[]photoRes.PhotoResponse, error)
+	GetPhotoById(photoId uint) (*photoRes.PhotoResponse, error)
+	UpdatePhoto(userId uint, photoId uint, request photo.UpdatePhotoRequest) (*photoRes.PhotoResponse, error)
+	DeletePhoto(photoId uint) (*photoRes.PhotoResponse, error)
 }
