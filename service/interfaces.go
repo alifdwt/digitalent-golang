@@ -4,11 +4,13 @@ import (
 	"mygram-api/domain/requests/auth"
 	"mygram-api/domain/requests/comment"
 	"mygram-api/domain/requests/photo"
+	socialmedia "mygram-api/domain/requests/social_media"
 	"mygram-api/domain/requests/user"
 	"mygram-api/domain/responses"
 	commentRes "mygram-api/domain/responses/comment"
 	photoRes "mygram-api/domain/responses/photo"
 	userRes "mygram-api/domain/responses/user"
+	"mygram-api/models"
 )
 
 type AuthService interface {
@@ -35,4 +37,12 @@ type CommentService interface {
 	GetCommentById(commentId uint) (*commentRes.CommentResponse, error)
 	UpdateComment(userId uint, commentId uint, request comment.UpdateCommentRequest) (*commentRes.CommentResponse, error)
 	DeleteComment(commentId uint) (*commentRes.CommentResponse, error)
+}
+
+type SocialMediaService interface {
+	CreateSocialMedia(userId uint, request socialmedia.CreateSocialMediaRequest) (*models.SocialMedia, error)
+	GetSocialMediaAll(userId uint) (*[]models.SocialMedia, error)
+	GetSocialMediaById(socialMediaId uint) (*models.SocialMedia, error)
+	UpdateSocialMedia(socialMediaId uint, request socialmedia.UpdateSocialMediaRequest) (*models.SocialMedia, error)
+	DeleteSocialMedia(socialMediaId uint) (*models.SocialMedia, error)
 }
