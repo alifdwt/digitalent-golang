@@ -26,12 +26,12 @@ func (s *photoService) CreatePhoto(userId uint, request photo.CreatePhotoRequest
 		return nil, err
 	}
 
-	mapper := s.mapper.ToPhotoResponse(res)
+	mapper := s.mapper.ToPhoto(res)
 
 	return mapper, nil
 }
 
-func (s *photoService) GetPhotoAll() (*[]photoRes.PhotoResponse, error) {
+func (s *photoService) GetPhotoAll() (*[]photoRes.PhotoWithRelationResponse, error) {
 	res, err := s.repository.GetPhotoAll()
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (s *photoService) GetPhotoAll() (*[]photoRes.PhotoResponse, error) {
 	return &mapper, nil
 }
 
-func (s *photoService) GetPhotoById(photoId uint) (*photoRes.PhotoResponse, error) {
+func (s *photoService) GetPhotoById(photoId uint) (*photoRes.PhotoWithRelationResponse, error) {
 	res, err := s.repository.GetPhotoById(photoId)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (s *photoService) UpdatePhoto(userId uint, photoId uint, request photo.Upda
 		return nil, err
 	}
 
-	mapper := s.mapper.ToPhotoResponse(res)
+	mapper := s.mapper.ToPhoto(res)
 
 	return mapper, nil
 }
@@ -70,7 +70,7 @@ func (s *photoService) DeletePhoto(photoId uint) (*photoRes.PhotoResponse, error
 		return nil, err
 	}
 
-	mapper := s.mapper.ToPhotoResponse(res)
+	mapper := s.mapper.ToPhoto(res)
 
 	return mapper, nil
 }

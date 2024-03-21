@@ -28,24 +28,24 @@ func (s *commentService) CreateComment(userId uint, request comment.CreateCommen
 	return mapper, nil
 }
 
-func (s *commentService) GetCommentAll() (*[]commentRes.CommentResponse, error) {
+func (s *commentService) GetCommentAll() (*[]commentRes.CommentWithRelationResponse, error) {
 	res, err := s.repository.GetCommentAll()
 	if err != nil {
 		return nil, err
 	}
 
-	mapper := s.mapper.ToCommentResponses(res)
+	mapper := s.mapper.ToCommentWithRelationResponses(res)
 
 	return &mapper, nil
 }
 
-func (s *commentService) GetCommentById(commentId uint) (*commentRes.CommentResponse, error) {
+func (s *commentService) GetCommentById(commentId uint) (*commentRes.CommentWithRelationResponse, error) {
 	res, err := s.repository.GetCommentById(commentId)
 	if err != nil {
 		return nil, err
 	}
 
-	mapper := s.mapper.ToCommentResponse(res)
+	mapper := s.mapper.ToCommentWithRelationResponse(res)
 
 	return mapper, nil
 }

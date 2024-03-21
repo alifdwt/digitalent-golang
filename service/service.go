@@ -32,6 +32,6 @@ func NewService(deps Deps) *Service {
 		User:        NewUserService(deps.Repository.User, deps.Hashing, deps.Logger, deps.Mapper.UserMapper),
 		Photo:       NewPhotoService(deps.Repository.Photo, deps.Mapper.PhotoMapper),
 		Comment:     NewCommentService(deps.Repository.Comment, deps.Mapper.CommentMapper),
-		SocialMedia: NewSocialMediaService(deps.Repository.SocialMedia),
+		SocialMedia: NewSocialMediaService(deps.Repository.SocialMedia, deps.Mapper.SocialMediaMapper),
 	}
 }

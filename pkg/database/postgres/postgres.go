@@ -7,8 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewClient(dbUser string, dbPassword string, dbHost string, dbName string) (*gorm.DB, error) {
-	return createClient(dbUser, dbPassword, dbHost, dbName)
+func NewClient(dbHost string, dbUser string, dbPassword string, dbName string, dbPort string, dbTimezone string) (*gorm.DB, error) {
+	return createClient(dbHost, dbUser, dbPassword, dbName, dbPort, dbTimezone)
 }
 func checkAndCreateDatabase(DB *gorm.DB, dbName string) {
 	var count int64
@@ -33,8 +33,8 @@ func createDatabase(DB *gorm.DB, dbName string) {
 	fmt.Printf("Database %s created\n", dbName)
 }
 
-func createClient(dbUser string, dbPassword string, dbHost string, dbName string) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", dbUser, dbPassword, dbHost, "postgres")
+func createClient(dbHost string, dbUser string, dbPassword string, dbName string, dbPort string, dbTimezone string) (*gorm.DB, error) {
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s", dbHost, dbUser, dbPassword, "postgres", dbPort, dbTimezone)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -43,7 +43,8 @@ func createClient(dbUser string, dbPassword string, dbHost string, dbName string
 
 	checkAndCreateDatabase(db, dbName)
 
-	dsnNew := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", dbUser, dbPassword, dbHost, dbName)
+	// dsnNew := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", dbUser, dbPassword, dbHost, dbName)
+	dsnNew := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s", dbHost, dbUser, dbPassword, dbName, dbPort, dbTimezone)
 
 	db, err = gorm.Open(postgres.Open(dsnNew), &gorm.Config{})
 	if err != nil {

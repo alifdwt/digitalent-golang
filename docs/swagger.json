@@ -35,7 +35,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/comment.CommentResponse"
+                                "$ref": "#/definitions/comment.CommentWithRelationResponse"
                             }
                         }
                     },
@@ -76,8 +76,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/comment.CommentResponse"
                         }
@@ -117,7 +117,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/comment.CommentResponse"
+                            "$ref": "#/definitions/comment.CommentWithRelationResponse"
                         }
                     },
                     "400": {
@@ -219,6 +219,11 @@
         },
         "/photos": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all photos from the application",
                 "consumes": [
                     "application/json"
@@ -236,7 +241,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/photo.PhotoResponse"
+                                "$ref": "#/definitions/photo.PhotoWithRelationResponse"
                             }
                         }
                     },
@@ -277,8 +282,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/photo.PhotoResponse"
                         }
@@ -292,8 +297,13 @@
                 }
             }
         },
-        "/photos/{id}": {
+        "/photos/{photoId}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get photo by id",
                 "consumes": [
                     "application/json"
@@ -309,7 +319,7 @@
                     {
                         "type": "integer",
                         "description": "Photo ID",
-                        "name": "id",
+                        "name": "photoId",
                         "in": "path",
                         "required": true
                     }
@@ -318,7 +328,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/photo.PhotoResponse"
+                            "$ref": "#/definitions/photo.PhotoWithRelationResponse"
                         }
                     },
                     "400": {
@@ -350,7 +360,7 @@
                     {
                         "type": "integer",
                         "description": "Photo ID",
-                        "name": "id",
+                        "name": "photoId",
                         "in": "path",
                         "required": true
                     },
@@ -383,6 +393,9 @@
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Delete photo",
@@ -400,7 +413,7 @@
                     {
                         "type": "integer",
                         "description": "Photo ID",
-                        "name": "id",
+                        "name": "photoId",
                         "in": "path",
                         "required": true
                     }
@@ -442,7 +455,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/socialmedia.SocialMediaResponse"
+                                "$ref": "#/definitions/socialmedia.SocialMediaWithRelationResponse"
                             }
                         }
                     },
@@ -529,7 +542,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/socialmedia.SocialMediaResponse"
+                            "$ref": "#/definitions/socialmedia.SocialMediaWithRelationResponse"
                         }
                     },
                     "400": {
@@ -845,6 +858,29 @@
                 }
             }
         },
+        "comment.CommentWithRelationResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "photo": {
+                    "$ref": "#/definitions/photo.PhotoResponse"
+                },
+                "photo_id": {
+                    "type": "integer"
+                },
+                "user": {
+                    "$ref": "#/definitions/user.UserRelationsResponse"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "comment.CreateCommentRequest": {
             "type": "object",
             "required": [
@@ -903,6 +939,29 @@
                 },
                 "title": {
                     "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "photo.PhotoWithRelationResponse": {
+            "type": "object",
+            "properties": {
+                "caption": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/user.UserRelationsResponse"
                 },
                 "user_id": {
                     "type": "integer"
@@ -972,8 +1031,25 @@
                 "social_media_url": {
                     "type": "string"
                 },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "socialmedia.SocialMediaWithRelationResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "social_media_url": {
+                    "type": "string"
+                },
                 "user": {
-                    "$ref": "#/definitions/user.UserResponse"
+                    "$ref": "#/definitions/user.UserRelationsResponse"
                 },
                 "user_id": {
                     "type": "integer"
@@ -1012,6 +1088,20 @@
                 },
                 "profile_image_url": {
                     "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserRelationsResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "username": {
                     "type": "string"

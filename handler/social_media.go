@@ -29,7 +29,7 @@ func (h *Handler) initSocialMediaGroup(api *gin.Engine) {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {object} []socialmedia.SocialMediaResponse
+// @Success 200 {object} []socialmedia.SocialMediaWithRelationResponse
 // @Failure 400 {object} responses.ErrorMessage
 // @Router /socialmedias [get]
 func (h *Handler) handlerGetSocialMediaAll(c *gin.Context) {
@@ -57,7 +57,7 @@ func (h *Handler) handlerGetSocialMediaAll(c *gin.Context) {
 // @Produce json
 // @Param socialMediaId path int true "Social Media ID"
 // @Security BearerAuth
-// @Success 200 {object} socialmedia.SocialMediaResponse
+// @Success 200 {object} socialmedia.SocialMediaWithRelationResponse
 // @Failure 400 {object} responses.ErrorMessage
 // @Router /socialmedias/{socialMediaId} [get]
 func (h *Handler) handlerGetSocialMediaById(c *gin.Context) {

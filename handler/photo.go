@@ -14,13 +14,13 @@ import (
 func (h *Handler) initPhotoGroup(api *gin.Engine) {
 	photo := api.Group("/photos")
 
-	photo.GET("/", h.handlerGetPhotoAll)
-	photo.GET("/:id", h.handlerGetPhotoById)
-
 	photo.Use(authMiddleware(h.tokenMaker))
+	photo.GET("/", h.handlerGetPhotoAll)
+	photo.GET("/:photoId", h.handlerGetPhotoById)
+
 	photo.POST("/", h.handlerCreatePhoto)
-	photo.PUT("/:id", h.handlerUpdatePhoto)
-	photo.DELETE("/:id", h.handlerDeletePhoto)
+	photo.PUT("/:photoId", h.handlerUpdatePhoto)
+	photo.DELETE("/:photoId", h.handlerDeletePhoto)
 }
 
 // handlerCreatePhoto function
@@ -31,7 +31,7 @@ func (h *Handler) initPhotoGroup(api *gin.Engine) {
 // @Produce json
 // @Param data body photo.CreatePhotoRequest true "photo data"
 // @Security BearerAuth
-// @Success 200 {object} photo.PhotoResponse
+// @Success 201 {object} photo.PhotoResponse
 // @Failure 400 {object} responses.ErrorMessage
 // @Router /photos [post]
 func (h *Handler) handlerCreatePhoto(c *gin.Context) {
@@ -59,7 +59,7 @@ func (h *Handler) handlerCreatePhoto(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusCreated, res)
 }
 
 // handlerGetPhotoAll function
@@ -68,7 +68,8 @@ func (h *Handler) handlerCreatePhoto(c *gin.Context) {
 // @Tags photos
 // @Accept json
 // @Produce json
-// @Success 200 {object} []photo.PhotoResponse
+// @Security BearerAuth
+// @Success 200 {object} []photo.PhotoWithRelationResponse
 // @Failure 400 {object} responses.ErrorMessage
 // @Router /photos [get]
 func (h *Handler) handlerGetPhotoAll(c *gin.Context) {
@@ -87,12 +88,13 @@ func (h *Handler) handlerGetPhotoAll(c *gin.Context) {
 // @Tags photos
 // @Accept json
 // @Produce json
-// @Param id path int true "Photo ID"
-// @Success 200 {object} photo.PhotoResponse
+// @Security BearerAuth
+// @Param photoId path int true "Photo ID"
+// @Success 200 {object} photo.PhotoWithRelationResponse
 // @Failure 400 {object} responses.ErrorMessage
-// @Router /photos/{id} [get]
+// @Router /photos/{photoId} [get]
 func (h *Handler) handlerGetPhotoById(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, err := strconv.ParseUint(c.Param("photoId"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -113,14 +115,14 @@ func (h *Handler) handlerGetPhotoById(c *gin.Context) {
 // @Tags photos
 // @Accept json
 // @Produce json
-// @Param id path int true "Photo ID"
+// @Param photoId path int true "Photo ID"
 // @Param data body photo.UpdatePhotoRequest true "photo data"
 // @Security BearerAuth
 // @Success 200 {object} photo.PhotoResponse
 // @Failure 400 {object} responses.ErrorMessage
-// @Router /photos/{id} [put]
+// @Router /photos/{photoId} [put]
 func (h *Handler) handlerUpdatePhoto(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, err := strconv.ParseUint(c.Param("photoId"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -170,13 +172,14 @@ func (h *Handler) handlerUpdatePhoto(c *gin.Context) {
 // @Tags photos
 // @Accept json
 // @Produce json
-// @Param id path int true "Photo ID"
+// @Security BearerAuth
+// @Param photoId path int true "Photo ID"
 // @Security BearerAuth
 // @Success 200
 // @Failure 400 {object} responses.ErrorMessage
-// @Router /photos/{id} [delete]
+// @Router /photos/{photoId} [delete]
 func (h *Handler) handlerDeletePhoto(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, err := strconv.ParseUint(c.Param("photoId"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return

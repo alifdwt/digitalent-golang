@@ -14,10 +14,10 @@ import (
 func (h *Handler) initCommentGroup(api *gin.Engine) {
 	comment := api.Group("/comments")
 
+	comment.Use(authMiddleware(h.tokenMaker))
 	comment.GET("/", h.handlerGetCommentAll)
 	comment.GET("/:commentId", h.handlerGetCommentById)
 
-	comment.Use(authMiddleware(h.tokenMaker))
 	comment.POST("/", h.handlerCreateComment)
 	comment.PUT("/:commentId", h.handlerUpdateComment)
 	comment.DELETE("/:commentId", h.handlerDeleteComment)
@@ -29,7 +29,7 @@ func (h *Handler) initCommentGroup(api *gin.Engine) {
 // @Tags comments
 // @Accept json
 // @Produce json
-// @Success 200 {object} []comment.CommentResponse
+// @Success 200 {object} []comment.CommentWithRelationResponse
 // @Failure 400 {object} responses.ErrorMessage
 // @Router /comments [get]
 func (h *Handler) handlerGetCommentAll(c *gin.Context) {
@@ -49,7 +49,7 @@ func (h *Handler) handlerGetCommentAll(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param commentId path int true "Comment ID"
-// @Success 200 {object} comment.CommentResponse
+// @Success 200 {object} comment.CommentWithRelationResponse
 // @Failure 400 {object} responses.ErrorMessage
 // @Router /comments/{commentId} [get]
 func (h *Handler) handlerGetCommentById(c *gin.Context) {
@@ -76,7 +76,7 @@ func (h *Handler) handlerGetCommentById(c *gin.Context) {
 // @Produce json
 // @Param data body comment.CreateCommentRequest true "comment data"
 // @Security BearerAuth
-// @Success 200 {object} comment.CommentResponse
+// @Success 201 {object} comment.CommentResponse
 // @Failure 400 {object} responses.ErrorMessage
 // @Router /comments [post]
 func (h *Handler) handlerCreateComment(c *gin.Context) {
@@ -104,7 +104,7 @@ func (h *Handler) handlerCreateComment(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusCreated, res)
 }
 
 // handlerUpdateComment function

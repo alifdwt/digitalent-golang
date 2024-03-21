@@ -39,7 +39,7 @@ func (r *photoRepository) GetPhotoAll() (*[]models.Photo, error) {
 
 	db := r.db.Model(&photos)
 
-	result := db.Debug().Find(&photos)
+	result := db.Debug().Preload("User").Find(&photos)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -52,7 +52,7 @@ func (r *photoRepository) GetPhotoById(photoId uint) (*models.Photo, error) {
 
 	db := r.db.Model(&photo)
 
-	result := db.Debug().Where("id = ?", photoId).First(&photo)
+	result := db.Debug().Preload("User").Where("id = ?", photoId).First(&photo)
 	if result.Error != nil {
 		return nil, result.Error
 	}

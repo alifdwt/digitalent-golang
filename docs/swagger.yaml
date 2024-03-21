@@ -40,6 +40,21 @@ definitions:
       user_id:
         type: integer
     type: object
+  comment.CommentWithRelationResponse:
+    properties:
+      id:
+        type: integer
+      message:
+        type: string
+      photo:
+        $ref: '#/definitions/photo.PhotoResponse'
+      photo_id:
+        type: integer
+      user:
+        $ref: '#/definitions/user.UserRelationsResponse'
+      user_id:
+        type: integer
+    type: object
   comment.CreateCommentRequest:
     properties:
       message:
@@ -79,6 +94,21 @@ definitions:
         type: string
       title:
         type: string
+      user_id:
+        type: integer
+    type: object
+  photo.PhotoWithRelationResponse:
+    properties:
+      caption:
+        type: string
+      id:
+        type: integer
+      photo_url:
+        type: string
+      title:
+        type: string
+      user:
+        $ref: '#/definitions/user.UserRelationsResponse'
       user_id:
         type: integer
     type: object
@@ -124,8 +154,19 @@ definitions:
         type: string
       social_media_url:
         type: string
+      user_id:
+        type: integer
+    type: object
+  socialmedia.SocialMediaWithRelationResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      social_media_url:
+        type: string
       user:
-        $ref: '#/definitions/user.UserResponse'
+        $ref: '#/definitions/user.UserRelationsResponse'
       user_id:
         type: integer
     type: object
@@ -154,6 +195,15 @@ definitions:
     - age
     - email
     - username
+    type: object
+  user.UserRelationsResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      username:
+        type: string
     type: object
   user.UserResponse:
     properties:
@@ -194,7 +244,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/comment.CommentResponse'
+              $ref: '#/definitions/comment.CommentWithRelationResponse'
             type: array
         "400":
           description: Bad Request
@@ -217,8 +267,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/comment.CommentResponse'
         "400":
@@ -271,7 +321,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/comment.CommentResponse'
+            $ref: '#/definitions/comment.CommentWithRelationResponse'
         "400":
           description: Bad Request
           schema:
@@ -323,12 +373,14 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/photo.PhotoResponse'
+              $ref: '#/definitions/photo.PhotoWithRelationResponse'
             type: array
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Get all photos
       tags:
       - photos
@@ -346,8 +398,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/photo.PhotoResponse'
         "400":
@@ -359,7 +411,7 @@ paths:
       summary: Create photo
       tags:
       - photos
-  /photos/{id}:
+  /photos/{photoId}:
     delete:
       consumes:
       - application/json
@@ -367,7 +419,7 @@ paths:
       parameters:
       - description: Photo ID
         in: path
-        name: id
+        name: photoId
         required: true
         type: integer
       produces:
@@ -381,6 +433,7 @@ paths:
             $ref: '#/definitions/responses.ErrorMessage'
       security:
       - BearerAuth: []
+      - BearerAuth: []
       summary: Delete photo
       tags:
       - photos
@@ -391,7 +444,7 @@ paths:
       parameters:
       - description: Photo ID
         in: path
-        name: id
+        name: photoId
         required: true
         type: integer
       produces:
@@ -400,11 +453,13 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/photo.PhotoResponse'
+            $ref: '#/definitions/photo.PhotoWithRelationResponse'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Get photo
       tags:
       - photos
@@ -415,7 +470,7 @@ paths:
       parameters:
       - description: Photo ID
         in: path
-        name: id
+        name: photoId
         required: true
         type: integer
       - description: photo data
@@ -452,7 +507,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/socialmedia.SocialMediaResponse'
+              $ref: '#/definitions/socialmedia.SocialMediaWithRelationResponse'
             type: array
         "400":
           description: Bad Request
@@ -531,7 +586,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/socialmedia.SocialMediaResponse'
+            $ref: '#/definitions/socialmedia.SocialMediaWithRelationResponse'
         "400":
           description: Bad Request
           schema:

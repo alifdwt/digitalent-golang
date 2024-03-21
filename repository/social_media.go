@@ -38,7 +38,7 @@ func (r *socialMediaRepository) GetSocialMediaAll(userId uint) (*[]models.Social
 
 	db := r.db.Model(&socialMedias)
 
-	result := db.Debug().Where("user_id = ?", userId).Find(&socialMedias)
+	result := db.Debug().Preload("User").Where("user_id = ?", userId).Find(&socialMedias)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -51,7 +51,7 @@ func (r *socialMediaRepository) GetSocialMediaById(socialMediaId uint) (*models.
 
 	db := r.db.Model(&socialMedia)
 
-	result := db.Debug().Where("id = ?", socialMediaId).First(&socialMedia)
+	result := db.Debug().Preload("User").Where("id = ?", socialMediaId).First(&socialMedia)
 	if result.Error != nil {
 		return nil, result.Error
 	}

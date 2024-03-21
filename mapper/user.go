@@ -21,3 +21,11 @@ func (m *userMapper) ToUserResponse(request *models.User) *user.UserResponse {
 		ProfileImageURL: request.ProfileImageURL,
 	}
 }
+
+func (m *userMapper) ToUserRelationsResponse(request *models.User) *user.UserRelationsResponse {
+	return &user.UserRelationsResponse{
+		ID:       request.ID,
+		Email:    request.Email,
+		Username: request.Username,
+	}
+}

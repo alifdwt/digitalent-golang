@@ -43,7 +43,14 @@ func main() {
 		log.Error("Error while load environtment variables", zap.Error(err))
 	}
 
-	db, err := postgres.NewClient(config.DB_USER, config.DB_PASSWORD, config.DB_HOST, config.DB_NAME)
+	db, err := postgres.NewClient(
+		config.DB_HOST,
+		config.DB_USER,
+		config.DB_PASSWORD,
+		config.DB_NAME,
+		config.DB_PORT,
+		config.APP_TIMEZONE,
+	)
 	if err != nil {
 		log.Error("Error while connecting to database", zap.Error(err))
 	}

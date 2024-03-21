@@ -42,7 +42,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/comment.CommentResponse"
+                                "$ref": "#/definitions/comment.CommentWithRelationResponse"
                             }
                         }
                     },
@@ -83,8 +83,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/comment.CommentResponse"
                         }
@@ -124,7 +124,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/comment.CommentResponse"
+                            "$ref": "#/definitions/comment.CommentWithRelationResponse"
                         }
                     },
                     "400": {
@@ -226,6 +226,11 @@ const docTemplate = `{
         },
         "/photos": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all photos from the application",
                 "consumes": [
                     "application/json"
@@ -243,7 +248,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/photo.PhotoResponse"
+                                "$ref": "#/definitions/photo.PhotoWithRelationResponse"
                             }
                         }
                     },
@@ -284,8 +289,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/photo.PhotoResponse"
                         }
@@ -299,8 +304,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/photos/{id}": {
+        "/photos/{photoId}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get photo by id",
                 "consumes": [
                     "application/json"
@@ -316,7 +326,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Photo ID",
-                        "name": "id",
+                        "name": "photoId",
                         "in": "path",
                         "required": true
                     }
@@ -325,7 +335,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/photo.PhotoResponse"
+                            "$ref": "#/definitions/photo.PhotoWithRelationResponse"
                         }
                     },
                     "400": {
@@ -357,7 +367,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Photo ID",
-                        "name": "id",
+                        "name": "photoId",
                         "in": "path",
                         "required": true
                     },
@@ -390,6 +400,9 @@ const docTemplate = `{
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Delete photo",
@@ -407,7 +420,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Photo ID",
-                        "name": "id",
+                        "name": "photoId",
                         "in": "path",
                         "required": true
                     }
@@ -449,7 +462,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/socialmedia.SocialMediaResponse"
+                                "$ref": "#/definitions/socialmedia.SocialMediaWithRelationResponse"
                             }
                         }
                     },
@@ -536,7 +549,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/socialmedia.SocialMediaResponse"
+                            "$ref": "#/definitions/socialmedia.SocialMediaWithRelationResponse"
                         }
                     },
                     "400": {
@@ -852,6 +865,29 @@ const docTemplate = `{
                 }
             }
         },
+        "comment.CommentWithRelationResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "photo": {
+                    "$ref": "#/definitions/photo.PhotoResponse"
+                },
+                "photo_id": {
+                    "type": "integer"
+                },
+                "user": {
+                    "$ref": "#/definitions/user.UserRelationsResponse"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "comment.CreateCommentRequest": {
             "type": "object",
             "required": [
@@ -910,6 +946,29 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "photo.PhotoWithRelationResponse": {
+            "type": "object",
+            "properties": {
+                "caption": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/user.UserRelationsResponse"
                 },
                 "user_id": {
                     "type": "integer"
@@ -979,8 +1038,25 @@ const docTemplate = `{
                 "social_media_url": {
                     "type": "string"
                 },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "socialmedia.SocialMediaWithRelationResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "social_media_url": {
+                    "type": "string"
+                },
                 "user": {
-                    "$ref": "#/definitions/user.UserResponse"
+                    "$ref": "#/definitions/user.UserRelationsResponse"
                 },
                 "user_id": {
                     "type": "integer"
@@ -1019,6 +1095,20 @@ const docTemplate = `{
                 },
                 "profile_image_url": {
                     "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserRelationsResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "username": {
                     "type": "string"

@@ -7,10 +7,10 @@ type User struct {
 	Username        string        `json:"username" gorm:"size:50;unique;not null"`
 	Email           string        `json:"email" gorm:"size:150;unique;not null"`
 	Password        string        `json:"password" gorm:"type:text;not null"`
-	Age             uint          `json:"age" gorm:"not null"`
+	Age             uint          `json:"age" gorm:"not null;type:integer"`
 	ProfileImageURL string        `json:"profile_image_url"`
-	CreatedAt       time.Time     `json:"created_at"`
-	UpdatedAt       time.Time     `json:"updated_at"`
+	CreatedAt       time.Time     `json:"created_at" gorm:"type:timestamp"`
+	UpdatedAt       time.Time     `json:"updated_at" gorm:"type:timestamp"`
 	Comments        []Comment     `gorm:"constraint:OnDelete:CASCADE"`
 	Photos          []Photo       `gorm:"constraint:OnDelete:CASCADE"`
 	SocialMedia     []SocialMedia `gorm:"constraint:OnDelete:CASCADE"`

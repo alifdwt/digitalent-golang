@@ -7,8 +7,8 @@ type SocialMedia struct {
 	Name           string    `json:"name" gorm:"size:50"`
 	SocialMediaURL string    `json:"social_media_url" gorm:"type:text;not null"`
 	UserID         uint      `json:"user_id" gorm:"not null"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
+	CreatedAt      time.Time `json:"created_at" gorm:"type:timestamp"`
+	UpdatedAt      time.Time `json:"updated_at" gorm:"type:timestamp"`
 	User           User
 }
 

@@ -9,7 +9,7 @@ type Photo struct {
 	PhotoURL  string    `json:"photo_url" gorm:"type:text;not null"`
 	UserID    uint      `json:"user_id" gorm:"not null"`
 	User      User      `json:"user"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"created_at" gorm:"type:timestamp"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"type:timestamp"`
 	Comments  []Comment `gorm:"constraint:OnDelete:CASCADE"`
 }
