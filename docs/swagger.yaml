@@ -250,6 +250,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Get all comments
       tags:
       - comments
@@ -326,6 +328,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Get comment
       tags:
       - comments

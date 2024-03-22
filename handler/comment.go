@@ -29,6 +29,7 @@ func (h *Handler) initCommentGroup(api *gin.Engine) {
 // @Tags comments
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Success 200 {object} []comment.CommentWithRelationResponse
 // @Failure 400 {object} responses.ErrorMessage
 // @Router /comments [get]
@@ -48,6 +49,7 @@ func (h *Handler) handlerGetCommentAll(c *gin.Context) {
 // @Tags comments
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param commentId path int true "Comment ID"
 // @Success 200 {object} comment.CommentWithRelationResponse
 // @Failure 400 {object} responses.ErrorMessage

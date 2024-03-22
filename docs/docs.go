@@ -25,6 +25,11 @@ const docTemplate = `{
     "paths": {
         "/comments": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all comments from the application",
                 "consumes": [
                     "application/json"
@@ -100,6 +105,11 @@ const docTemplate = `{
         },
         "/comments/{commentId}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get comment by id",
                 "consumes": [
                     "application/json"

@@ -72,7 +72,7 @@ func (r *socialMediaRepository) UpdateSocialMedia(socialMediaId uint, request so
 	socialMediaModel.Name = request.Name
 	socialMediaModel.SocialMediaURL = request.SocialMediaURL
 
-	updateSocialMedia := db.Debug().Updates(&socialMediaModel)
+	updateSocialMedia := db.Debug().Where("id = ?", socialMediaId).Updates(&socialMediaModel)
 	if updateSocialMedia.Error != nil {
 		return &socialMediaModel, updateSocialMedia.Error
 	}

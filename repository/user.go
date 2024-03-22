@@ -69,22 +69,22 @@ func (r *userRepository) UpdateUserById(id uint, updatedUser *user.UpdateUserReq
 
 	db := r.db.Model(user)
 
-	res, err := r.GetUserById(id)
-	if err != nil {
-		return nil, err
+	checkUserById := db.Debug().Where("id = ?", id).First(&user)
+	if checkUserById.RowsAffected > 1 {
+		return &user, errors.New("user not found")
 	}
 
-	res.Username = updatedUser.Username
-	res.Email = updatedUser.Email
-	res.Age = updatedUser.Age
-	res.ProfileImageURL = updatedUser.ProfileImageURL
+	user.Username = updatedUser.Username
+	user.Email = updatedUser.Email
+	user.Age = updatedUser.Age
+	user.ProfileImageURL = updatedUser.ProfileImageURL
 
-	updateUser := db.Debug().Updates(&res)
-	if updateUser.RowsAffected > 1 {
-		return res, errors.New("error while updating user")
+	updateUser := db.Debug().Updates(&user)
+	if updateUser.Error != nil {
+		return nil, updateUser.Error
 	}
 
-	return res, nil
+	return &user, nil
 }
 
 func (r *userRepository) DeleteUserById(id uint) (*models.User, error) {

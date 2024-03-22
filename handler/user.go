@@ -49,13 +49,13 @@ func (h *Handler) handlerUpdateUser(c *gin.Context) {
 		return
 	}
 
-	updatedProduct, err := h.services.User.UpdateUserById(uint(userID), &body)
+	updatedUser, err := h.services.User.UpdateUserById(uint(userID), &body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	c.JSON(http.StatusOK, updatedProduct)
+	c.JSON(http.StatusOK, updatedUser)
 }
 
 // handlerDeleteUser function
